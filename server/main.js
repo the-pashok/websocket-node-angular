@@ -9,14 +9,16 @@ const corsOptions = {
   origin: 'http://localhost:4200',
   optionsSuccessStatus: 200
 };
+const messages = require('./routes/message.routes.js')(router);
 
 app.use(parser.json());
 app.use(parser.urlencoded({extended: true}));
-app.use(express.static(__dirname + '/client/dist/client'));
+app.use(express.static(path.join(__dirname, '../client/dist/client')));
 app.use(cors(corsOptions));
+app.use('/messages', messages);
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/client/dist/client/index.html'));
+  res.sendFile(path.join(__dirname, '../client/dist/client/index.html'));
 });
 
 app.listen(port, () => {
