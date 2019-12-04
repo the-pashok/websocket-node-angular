@@ -5,6 +5,18 @@ import {takeUntil} from 'rxjs/operators';
 
 import {MessageService} from './message.service';
 
+declare var WebSocket: any;
+
+const socketProtocol = (window.location.protocol === 'https:' ? 'wss:' : 'ws:');
+const echoSocketUrl = socketProtocol + '//localhost:85';
+const socket = new WebSocket(echoSocketUrl);
+let data;
+
+socket.onmessage = e => {
+  console.log('Message from server: ', e);
+  data = e.data;
+};
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -25,8 +37,6 @@ export class AppComponent {
   public onSubmit(): void {
     const message = this.form.get('message').value;
     this.messageService.sendMessage(message).pipe(takeUntil(this.destroy$))
-      .subscribe(res => {
-        console.log(res);
-      });
+      .subscribe(res => this.form.get('output').setValue(data));
   }
 }
