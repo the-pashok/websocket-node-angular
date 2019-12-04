@@ -1,21 +1,9 @@
 import { Component } from '@angular/core';
 import {FormGroup, FormBuilder, FormControl, Validators} from '@angular/forms';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
 
 import {MessageService} from './message.service';
 
 declare var WebSocket: any;
-
-const socketProtocol = (window.location.protocol === 'https:' ? 'wss:' : 'ws:');
-const echoSocketUrl = socketProtocol + '//localhost:85';
-const socket = new WebSocket(echoSocketUrl);
-let data;
-
-socket.onmessage = e => {
-  console.log('Message from server: ', e);
-  data = e.data;
-};
 
 @Component({
   selector: 'app-root',
@@ -24,19 +12,25 @@ socket.onmessage = e => {
 })
 export class AppComponent {
 
-  public destroy$ = new Subject();
   public form: FormGroup;
+  public socketProtocol = (window.location.protocol === 'https:' ? 'wss:' : 'ws:');
+  public echoSocketUrl = this.socketProtocol + '//localhost:85';
+  public socket = new WebSocket(this.echoSocketUrl);
+  public data = '';
+  public isFetched: boolean;
 
   constructor(private messageService: MessageService, private formBuilder: FormBuilder) {
     this.form = this.formBuilder.group({
-      message: new FormControl('', Validators.required),
-      output: new FormControl('')
+      message: new FormControl('', Validators.required)
     });
+    this.socket.onmessage = e => {
+      this.data = e.data;
+    };
   }
 
   public onSubmit(): void {
     const message = this.form.get('message').value;
-    this.messageService.sendMessage(message).pipe(takeUntil(this.destroy$))
-      .subscribe(res => this.form.get('output').setValue(data));
+    this.messageService.sendMessage(message)
+      .subscribe(() => this.isFetched = true);
   }
 }
