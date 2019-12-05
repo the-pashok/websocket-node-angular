@@ -34,7 +34,6 @@ app.post('/messages/send-message', (req, res) => {
 
 app.ws('/', (ws, req) => {
   console.log('Websocket server started !');
-  ws.send('Hi there, I am a WebSocket server');
 
   ws.on('close', () => {
     console.log('WebSocket was closed');
