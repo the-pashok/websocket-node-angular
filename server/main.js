@@ -6,7 +6,7 @@ const expressWs = require('express-ws');
 
 const app = express();
 expressWs(app);
-const port = 85;
+const port = 3000;
 const corsOptions = {
   origin: 'http://localhost:4200',
   optionsSuccessStatus: 200

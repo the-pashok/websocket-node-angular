@@ -1,21 +1,18 @@
 version: '3'
 
 services:
-  nodejs:
+  front:
     build:
-      context: .
-      dockerfile: Dockerfile
-    image: nodejs
-    container_name: nodejs
+      context: ./client
+    container_name: front
     restart: unless-stopped
-    env_file: .env
-    environment:
-      - USER_NAME=JOHN_DOE
     ports:
-      - "80:8080"
-    volumes:
-      - ./server
-      - node_modules:server/node_modules
-    networks:
-      - app-network
-    command: nodemon server/main.js
+      - "4200:4200"
+
+  server:
+    build:
+      context: ./server
+    container_name: server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"

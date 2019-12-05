@@ -14,7 +14,7 @@ export class AppComponent {
 
   public form: FormGroup;
   public socketProtocol = (window.location.protocol === 'https:' ? 'wss:' : 'ws:');
-  public echoSocketUrl = this.socketProtocol + '//localhost:85';
+  public echoSocketUrl = this.socketProtocol + '//localhost:3000';
   public socket = new WebSocket(this.echoSocketUrl);
   public data = '';
   public isFetched: boolean;
